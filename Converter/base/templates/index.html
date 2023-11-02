@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main">
+    <div class="container p-4">
+        <form action="" method="post">
+        {% csrf_token %}
+        <div class="row mx-auto">
+            <div class="col">
+                <input name="amount" class="form-control" type="text" placeholder="Type value" value="{% if amount %}{{ amount }}{% endif %}">
+            </div>
+            <div class="col">
+                <select name="select_from" class="form-select form-select-lg-sm" aria-label=".form-select-lg example">
+                    {% for curr in rates %}
+                    <option value="{{ curr }}" {% if curr == from_currency %}selected{% endif %}>{{ curr }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <select name="select_to" class="form-select form-select-lg-sm" aria-label=".form-select-lg example">
+                    {% for curr in rates %}
+                    <option value="{{ curr }}" {% if curr == to_currency %}selected{% endif %}>{{ curr }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row mt-5 w-50 mx-auto">
+            <button type="submit" class="disbtn btn btn-primary">Расчет</button>
+        </div>
+        {% if result %}
+            <div class="row mt-5 w-50 mx-auto">
+                <span class="d-inline p-2 bg-light rounded-3 text-center">{{ result }}</span>
+            </div>
+        {% endif %}
+    </form>
+    </div>
+</div>
+{% endblock content %}
