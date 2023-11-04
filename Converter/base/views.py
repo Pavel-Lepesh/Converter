@@ -1,24 +1,21 @@
 from django.shortcuts import render
-import requests
+from django.http import HttpResponseServerError
+from .forms import ConverterForm
 
 
 def view_base_page(request):
-    response = requests.get(url='https://v6.exchangerate-api.com/v6/1b90527463b7996bd1752453/latest/USD').json()
-    rates: dict = response['conversion_rates']
     if request.method == 'POST':
-        from_currency = request.POST['select_from']
-        to_currency = request.POST['select_to']
-        amount = request.POST['amount']
+        form = ConverterForm(request.POST)
 
-        result = round((rates[to_currency] / rates[from_currency]) * float(amount), 2)
+        if form.is_valid():
+            to_currency = request.POST['currency_to']
+            from_currency = request.POST['currency_from']
+            amount = request.POST['amount']
 
-        context = {
-            'rates': rates,
-            'result': result,
-            'from_currency': from_currency,
-            'to_currency': to_currency,
-            'amount': amount
-        }
-        return render(request, 'index.html', context=context)
+            result = round((float(to_currency) / float(from_currency)) * float(amount), 2)
+            return render(request, 'index.html', {'form': form, 'result': result})
+        else:
+            return HttpResponseServerError('error500.html')
     else:
-        return render(request, 'index.html', {'rates': rates.keys()})
+        form = ConverterForm()
+        return render(request, 'index.html', {'form': form})

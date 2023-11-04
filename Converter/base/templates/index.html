@@ -7,21 +7,13 @@
         {% csrf_token %}
         <div class="row mx-auto">
             <div class="col">
-                <input name="amount" class="form-control" type="text" placeholder="Type value" value="{% if amount %}{{ amount }}{% endif %}">
+                {{ form.amount }}
             </div>
             <div class="col">
-                <select name="select_from" class="form-select form-select-lg-sm" aria-label=".form-select-lg example">
-                    {% for curr in rates %}
-                    <option value="{{ curr }}" {% if curr == from_currency %}selected{% endif %}>{{ curr }}</option>
-                    {% endfor %}
-                </select>
+                {{ form.currency_from }}
             </div>
             <div class="col">
-                <select name="select_to" class="form-select form-select-lg-sm" aria-label=".form-select-lg example">
-                    {% for curr in rates %}
-                    <option value="{{ curr }}" {% if curr == to_currency %}selected{% endif %}>{{ curr }}</option>
-                    {% endfor %}
-                </select>
+                {{ form.currency_to }}
             </div>
         </div>
         <div class="row mt-5 w-50 mx-auto">
