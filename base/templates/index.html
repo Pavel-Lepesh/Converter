@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main">
+    <div class="p-4 d-flex justify-content-center">
+        <form action="" method="post">
+        {% csrf_token %}
+        <div class="row mx-auto">
+            <div class="col">
+                {{ form.currency_from }}
+            </div>
+            <div class="col">
+                {{ form.currency_to }}
+            </div>
+        </div>
+        <div class="row mt-5 mx-auto">
+            <div class="col">
+                {{ form.amount_from }}
+            </div>
+            <div class="col">
+                {{ form.amount_to }}
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <meta charset="UTF-8">
+    <title>Converter</title>
+</head>
+<body>
+    <div id="header" class="text-white text-center p-5">
+        <h1>Converter</h1>
+    </div>
+{% block content %}
+{% endblock %}
+{% block script %}
+    <script>
+        base_url = `${window.location.hostname}:${window.location.port}`
+        const websocket = new WebSocket(`ws://${base_url}`)
+        const input = document.querySelector('#input_form');
+        const output = document.querySelector('#output_form');
+        const curr_from = document.querySelector('#curr_from');
+        const curr_to = document.querySelector('#curr_to');
+
+        websocket.onopen = function (event) {
+            console.log('client says connection opened')
+        }
+
+        websocket.onmessage = function (event) {
+            console.log("client says server message received: ", event)
+        }
+
+        input.addEventListener('input', () =>
+        {
+            const message = {
+                type: 'input_form',
+                curr_from: curr_from.value,
+                curr_to: curr_to.value,
+                amount: input.value
+            };
+
+            websocket.send(JSON.stringify(message));
+        });
+
+        output.addEventListener('input', () =>
+        {
+            const message = {
+            type: 'output_form',
+            curr_from: curr_to.value,
+            curr_to: curr_from.value,
+            amount: output.value
+            };
+
+            websocket.send(JSON.stringify(message));
+        });
+
+        websocket.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.form_type == "input_form") {
+                output.value = data.result;
+            }else if (data.form_type == "output_form") {
+                input.value = data.result;
+            };
+
+        });
+    </script>
+{% endblock script %}
+</body>
+</html>
